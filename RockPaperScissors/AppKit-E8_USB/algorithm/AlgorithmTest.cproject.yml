@@ -2,8 +2,8 @@ project:
   description: Record data or playback recorded data as algorithm input and record algorithm output data
 
   packs:
-    - pack: ARM::CMSIS@^6.2.0
-    - pack: ARM::CMSIS-RTX@^5.9.0
+    - pack: ARM::CMSIS@^6.3.0
+    - pack: ARM::CMSIS-RTX@^5.9.1
     - pack: ARM::CMSIS-NN@^7.0.0
 
   connections:
@@ -58,12 +58,6 @@ project:
       type:  Board
     - layer: $AI-Layer$
       type:  AI
-
-  # List of miscellaneous tool-specific controls
-  misc:
-  - for-compiler: GCC
-    Link:
-      - -Wl,-u,_printf_float
 
   output:
     type:
