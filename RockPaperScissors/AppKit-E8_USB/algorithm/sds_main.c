@@ -173,7 +173,12 @@ __NO_RETURN void AlgorithmThread (void *argument) {
         timeslot = osKernelGetTickCount();
 
         // Record algorithm input data
-        ret = sdsWrite(sds_data_in_id, timeslot, algo_data_in_buf, sizeof(algo_data_in_buf));
+        do {
+          ret = sdsWrite(sds_data_in_id, timeslot, algo_data_in_buf, sizeof(algo_data_in_buf));
+          if (ret == SDS_NO_DATA) {
+            osDelay(10U);
+          }
+        } while (ret == SDS_NO_SPACE);
         SDS_ASSERT(ret == sizeof(algo_data_in_buf));
       }
     }
