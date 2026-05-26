@@ -48,6 +48,24 @@ solution:
           images:
             - project-context: AlgorithmTest.Debug
 
+    - type: AVH-SSE-320
+      board: ARM::SSE-320
+      device: ARM::SSE-320-FVP
+      define:
+        - SIMULATOR
+      variables:
+        - Board-Layer: $SolutionDir()$/Board/Corstone-320/Board-U85.clayer.yml
+        - SDSIO-Layer: $SolutionDir()$/sdsio/fvp/sdsio_fvp.clayer.yml
+        - AI-Layer: $SolutionDir()$/ai_layer/ai_layer.clayer.yml
+      target-set:
+        - set: Arm-FVP
+          images:
+            - project-context: AlgorithmTest.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_Corstone_SSE-320
+            config-file: Board/Corstone-320/fvp_config.txt
+
   # List of different build configurations.
   build-types:
     - type: Debug
