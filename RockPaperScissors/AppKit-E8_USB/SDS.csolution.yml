@@ -45,6 +45,11 @@ solution:
             telnet:
               - pname: M55_HP
                 mode: console
+            rtt:
+              - pname: M55_HP
+                channel:
+                  - number: 1
+                    mode: systemview
           images:
             - project-context: AlgorithmTest.Debug
 
