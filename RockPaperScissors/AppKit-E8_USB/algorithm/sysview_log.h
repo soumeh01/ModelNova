@@ -19,7 +19,7 @@
 #ifndef SYSVIEW_LOG_H_
 #define SYSVIEW_LOG_H_
 
-#if ET_LOG_ENABLED
+#if ET_LOG_ENABLED && !defined(SIMULATOR)
 #define ET_LOG(_level, _format, ...)                                 \
   do {                                                               \
     sysview_log(_format,##__VA_ARGS__);                              \
