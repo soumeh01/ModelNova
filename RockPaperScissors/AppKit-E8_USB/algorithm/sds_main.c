@@ -85,8 +85,6 @@ int32_t OpenStreams (void) {
       } else {
         camera_fail = 1U;
       }
-    } else {
-      record_camera = 0U;
     }
     sds_data_in_id = sdsOpen("ML_In", sdsModeWrite, sds_data_in_buf, sizeof(sds_data_in_buf));
   }
