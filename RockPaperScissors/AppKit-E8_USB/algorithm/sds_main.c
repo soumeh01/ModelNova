@@ -124,21 +124,27 @@ int32_t CloseStreams (void) {
   if (sds_camera_id != NULL) {
     close_status = sdsClose(sds_camera_id);
     SDS_ERROR_CHECK(close_status);
-    if (close_status != SDS_OK) {
+    if (close_status == SDS_OK) {
+      sds_camera_id = NULL;
+    } else {
       status = -1;
     }
   }
   if (sds_data_in_id != NULL) {
     close_status = sdsClose(sds_data_in_id);
     SDS_ERROR_CHECK(close_status);
-    if (close_status != SDS_OK) {
+    if (close_status == SDS_OK) {
+      sds_data_in_id = NULL;
+    } else {
       status = -1;
     }
   }
   if (sds_data_out_id != NULL) {
     close_status = sdsClose(sds_data_out_id);
     SDS_ERROR_CHECK(close_status);
-    if (close_status != SDS_OK) {
+    if (close_status == SDS_OK) {
+      sds_data_out_id = NULL;
+    } else {
       status = -1;
     }
   }
