@@ -91,4 +91,5 @@ uv2csolution.log
 
 # SDS Playback Recordings and FVP Log files
 **/*.p.sds
+**/*.p.sds.bak
 **/sdsio.log
