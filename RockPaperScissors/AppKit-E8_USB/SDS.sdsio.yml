@@ -1,8 +1,8 @@
 sdsio:
   interface:
     usb:
-  workdir: ./algorithm/SDS Recordings
-  metadir: ./algorithm/SDS Recordings
+  workdir: ./SDS_Recordings
+  metadir: ./SDS_Recordings
 
   # Data stream information used by VS Code extension
   streams:
