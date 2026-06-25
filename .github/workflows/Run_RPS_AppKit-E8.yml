@@ -21,7 +21,8 @@ on:
     workflows: ["Build RPS for AppKit-E8 Hardware"]
     types:
       - completed
-    branches-ignore: ["main"]
+    branches-ignore:
+      - main
 
 permissions:
   contents: read
