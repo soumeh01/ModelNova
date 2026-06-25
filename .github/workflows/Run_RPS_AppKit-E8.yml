@@ -23,7 +23,6 @@ on:
       - completed
     branches-ignore:
       - main
-
 permissions:
   contents: read
   actions: read
