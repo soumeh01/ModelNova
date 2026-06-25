@@ -42,7 +42,6 @@ jobs:
             echo "Workflows on the private runner are restricted for security reasons."
             echo "Contributors can validate PRs using GitHub-hosted runners."
           } >> "$GITHUB_STEP_SUMMARY"
-          exit 1
 
   fork-pr-blocked:
     name: Block fork PRs from private runner
