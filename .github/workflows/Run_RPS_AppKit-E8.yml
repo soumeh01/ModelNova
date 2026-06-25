@@ -29,11 +29,7 @@ permissions:
 jobs:
   fork-pr-blocked:
     name: Block fork PRs from private runner
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_repository.full_name != github.repository }}
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-
     steps:
       - name: Notify runner restriction for fork PRs
         run: |
