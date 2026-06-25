@@ -19,7 +19,8 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows: ["Build RPS for AppKit-E8 Hardware"]
-    types: [completed]
+    types:
+      - completed
     branches-ignore: ["main"]
 
 permissions:
