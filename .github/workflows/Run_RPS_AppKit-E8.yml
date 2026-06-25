@@ -27,6 +27,19 @@ permissions:
   actions: read
 
 jobs:
+  fork-pr-blocked:
+    name: Block fork PRs from private runner
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_repository.full_name != github.repository }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Notify runner restriction for fork PRs
+        run: |
+          echo "Workflows on the private runner are restricted for security reasons."
+          echo "Contributor can validate PRs using GitHub-hosted runners."
+          exit 1
   CI:
     if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success') }}
     runs-on: [self-hosted, rsp-p5-01]
