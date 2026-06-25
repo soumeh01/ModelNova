@@ -19,17 +19,37 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows: ["Build RPS for AppKit-E8 Hardware"]
+    branches-ignore: [ main ]
     types: [completed]
-    branches-ignore: ["main"]
 
 permissions:
   contents: read
   actions: read
 
 jobs:
+  fork-restricted:
+    name: Private runner restricted
+    if: ${{ github.repository != 'Arm-Examples/ModelNova' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify runner restriction
+        run: |
+          echo "::error title=Private runner restricted::Workflows on the private runner are restricted for security reasons."
+          {
+            echo "## ⚠️ Workflow test was not run"
+            echo ""
+            echo "Workflows on the private runner are restricted for security reasons."
+            echo "Contributors can validate PRs using GitHub-hosted runners."
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
   fork-pr-blocked:
     name: Block fork PRs from private runner
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_repository.full_name != github.repository }}
+    if: >-
+      ${{ github.repository == 'Arm-Examples/ModelNova' &&
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.head_repository.full_name != github.repository }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -60,6 +80,7 @@ jobs:
           echo "Workflows on the private runner are restricted for security reasons."
           echo "Contributor can validate PRs using GitHub-hosted runners."
           exit 1
+
   CI:
     if: >-
       ${{ github.repository == 'Arm-Examples/ModelNova' &&
