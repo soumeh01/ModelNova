@@ -35,13 +35,19 @@ jobs:
     steps:
       - name: Notify runner restriction
         run: |
-          echo "::error title=Private runner restricted::Workflows on the private runner are restricted for security reasons."
+          MESSAGE="Workflows on the private runner are restricted for security reasons."
+          GUIDANCE="Contributors can validate changes using GitHub-hosted runners."
+
+          echo "${MESSAGE}"
+          echo "${GUIDANCE}"
           {
-            echo "## ⚠️ Workflow test was not run"
+            echo "## ⚠️ Hardware test was not run"
             echo ""
-            echo "Workflows on the private runner are restricted for security reasons."
-            echo "Contributors can validate PRs using GitHub-hosted runners."
+            echo "${MESSAGE}"
+            echo ""
+            echo "${GUIDANCE}"
           } >> "$GITHUB_STEP_SUMMARY"
+          exit 1
 
   fork-pr-blocked:
     name: Block fork PRs from private runner
