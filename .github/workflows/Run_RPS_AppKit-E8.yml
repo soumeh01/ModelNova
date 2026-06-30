@@ -23,8 +23,7 @@ permissions:
   actions: read
 
 jobs:
-  fork-restricted:
-    name: Private runner restricted
+  fork-check:
     if: ${{ github.repository != 'soumeh01/ModelNova' && github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
 
@@ -42,12 +41,16 @@ jobs:
 
   CI:
     if: >-
-      ${{ ((github.event_name == 'workflow_call' || github.event_name == 'pull_request' ) ||
-      (github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_repository.full_name == 'soumeh01/ModelNova')) }}
+      ${{ ((github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' ) && github.repository == 'soumeh01/ModelNova') }}
     runs-on: [ubuntu-latest]
 
     steps:
+      - name: Print GitHub event name
+        run: |
+          echo "github.event_name=${{ github.event_name }}"
+          echo "Full_name=${{github.repository}}"
+
       - name: Run run run
         run: |
           echo "The workflow CI job is running"
+          echo "Test contribution"
