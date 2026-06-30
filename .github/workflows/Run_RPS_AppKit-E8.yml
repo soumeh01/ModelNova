@@ -17,11 +17,7 @@
 name: Run RPS on AppKit-E8 Hardware
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Build RPS for AppKit-E8 Hardware"]
-    branches-ignore: [ main ]
-    types: [ completed ]
-
+  workflow_call:
 permissions:
   contents: read
   actions: read
@@ -29,116 +25,29 @@ permissions:
 jobs:
   fork-restricted:
     name: Private runner restricted
-    # trigger this only for forks, to prevent them from using the private runner
-    if: ${{ github.repository != 'Arm-Examples/ModelNova' }}
+    if: ${{ github.repository != 'soumeh01/ModelNova' && github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Notify runner restriction
         run: |
           MESSAGE="Workflows on the private runner are restricted for security reasons."
-          GUIDANCE="Contributors can validate changes using GitHub-hosted runners."
           echo "${MESSAGE}"
-          echo "${GUIDANCE}"
           {
-            echo "## ⚠️ Workflow was not run"
+            echo "## ⚠️ AppKit-E8 hardware test was not run"
             echo ""
             echo "${MESSAGE}"
-            echo ""
-            echo "${GUIDANCE}"
           } >> "$GITHUB_STEP_SUMMARY"
-          exit 1
-
-  fork-pr-blocked:
-    name: Block fork PRs from private runner
-    if: >-
-      ${{ github.repository == 'Arm-Examples/ModelNova' &&
-      github.event_name == 'workflow_run' &&
-      github.event.workflow_run.head_repository.full_name != github.repository }}
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-
-    steps:
-      - name: Comment on PR
-        if: ${{ github.event.workflow_run.pull_requests[0].number }}
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const pr = context.payload.workflow_run.pull_requests[0].number;
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr,
-              body: [
-                "⚠️ **AppKit-E8 hardware test was not run**",
-                "",
-                "Workflows on the private runner are restricted for security reasons.",
-            });
-
-      - name: Notify runner restriction for fork PRs
-        run: |
-          echo "Workflows on the private runner are restricted for security reasons."
-          echo "Contributors can validate PRs using GitHub-hosted runners."
           exit 1
 
   CI:
     if: >-
-      ${{ github.repository == 'Arm-Examples/ModelNova' &&
-      (github.event_name == 'workflow_dispatch' ||
+      ${{ ((github.event_name == 'workflow_call' || github.event_name == 'pull_request' ) ||
       (github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_repository.full_name == github.repository)) }}
-    runs-on: [self-hosted, rsp-p5-01]
+      github.event.workflow_run.head_repository.full_name == 'soumeh01/ModelNova')) }}
+    runs-on: [ubuntu-latest]
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          token: ${{ github.token }}
-
-      - name: Download Build Artifact
-        if: ${{ github.event_name == 'workflow_run' }}
-        uses: dawidd6/action-download-artifact@v17
-        with:
-          run_id: ${{ github.event.workflow_run.id }}
-          name: RPS_AppKit-E8-U85_HIL
-          path: ./RockPaperScissors/AppKit-E8_USB/out
-
-      - name: Flash using pyOCD
-        working-directory: ./RockPaperScissors/AppKit-E8_USB/out
+      - name: Run run run
         run: |
-          pyocd load --uid L96807771A --cbuild-run SDS+AppKit-E8-U85.cbuild-run.yml
-
-      - name: Run using pyOCD
-        working-directory: ./RockPaperScissors/AppKit-E8_USB/out
-        run: |
-          nohup pyocd run --uid L96807771A --cbuild-run SDS+AppKit-E8-U85.cbuild-run.yml --timelimit 30 --eot > pyocd.out 2>&1 &
-
-      - name: Start the SDSIO server on the Raspberry Pi
-        working-directory: ./RockPaperScissors/AppKit-E8_USB
-        run: |
-          sleep 2 # Delay to ensure that pyOCD is started
-          sdsio-server --control SDS.sdsio.yml --playback --exit-after-playback --no-progress-info | tee sdsio-server.log
-
-      - name: Wait for pyocd to complete
-        run: |
-          while pgrep pyocd > /dev/null; do
-            sleep 1
-          done
-
-      - name: Show content of the pyocd.out file
-        working-directory: ./RockPaperScissors/AppKit-E8_USB/out
-        run: |
-          cat ./pyocd.out
-
-      - name: Upload SDS artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: sds-artifacts
-          path: |
-            RockPaperScissors/AppKit-E8_USB/SDS_Recordings/*.p.sds
-            RockPaperScissors/AppKit-E8_USB/out/pyocd.out
-            RockPaperScissors/AppKit-E8_USB/out/SDS+AppKit-E8-U85.SVDat
-            RockPaperScissors/AppKit-E8_USB/sdsio-server.log
-          if-no-files-found: warn
+          echo "The workflow CI job is running"
